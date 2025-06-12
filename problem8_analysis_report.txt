@@ -1,0 +1,328 @@
+================================================================
+PROBLEM 8 ANALYSIS REPORT: LOGICAL SQUARE RELATIONSHIPS IMPACT ON SOLVER PERFORMANCE
+================================================================
+
+EXPERIMENT OVERVIEW:
+-------------------
+This analysis examines how different logical square relationships between two formulas affect solver performance and satisfiability outcomes. The study investigates three classical logical relationships (contradictory, subcontrary, subalternated) under both regular and Poisson distributions, providing insights into how logical structure complexity impacts computational requirements and solver behavior.
+
+EXPERIMENTAL SETUP:
+------------------
+- Base formulas: F₁ and F₂ (50% liveness + 50% safety clauses each)
+- Formula sizes tested: 100, 200, 500 clauses per formula
+- Clause lengths: 2, 3, 4, 6, 8, 10 literals
+- Solvers tested: vampire, snake, z3, prover9, cvc5, e, inkresat
+
+LOGICAL RELATIONSHIPS TESTED:
+----------------------------
+a) Contradictory: (F₁ ⇒ ¬F₂) ∧ (¬F₁ ⇒ F₂)
+   - Exactly one of F₁ or F₂ must be true, never both or neither
+   
+b) Subcontrary: ¬(¬F₁ ∧ ¬F₂)  
+   - At least one of F₁ or F₂ must be true (can be both)
+   
+c) Subalternated: (F₁ ⇒ F₂) ∧ ¬(F₂ ⇒ F₁)
+   - F₁ implies F₂, but F₂ does not imply F₁ (asymmetric relationship)
+
+d-f) Poisson variants of relationships a-c with statistical clause length distribution
+
+================================================================
+CRITICAL FINDINGS - SATISFIABILITY ANALYSIS:
+================================================================
+
+REGULAR DISTRIBUTION SAT/UNSAT PATTERNS:
+---------------------------------------
+
+Contradictory Relationship:
+• 100-200 clauses: All solvers achieve SAT (except prover9 UNSAT at 200)
+• 500 clauses: All solvers achieve SAT including inkresat
+• Pattern: Generally satisfiable with good solver agreement
+
+Subcontrary Relationship:
+• All tested sizes: Consistently SAT across all active solvers
+• Most reliable satisfiability pattern observed
+• No UNSAT results recorded for any solver
+
+Subalternated Relationship:
+• All tested sizes: Consistently SAT across all active solvers
+• Strong solver agreement on satisfiability
+• Asymmetric implication structure remains satisfiable
+
+POISSON DISTRIBUTION SAT/UNSAT PATTERNS:
+---------------------------------------
+
+Contradictory Poisson:
+• 100 clauses: Mixed results (vampire, snake, e: SAT; prover9: UNSAT)
+• 200-500 clauses: Significant solver disagreement
+• Z3, prover9, cvc5: Consistent UNSAT results
+• Vampire, snake, e: Maintain SAT results
+
+Subcontrary Poisson:
+• 100 clauses: Most solvers achieve SAT
+• 200-500 clauses: Z3 and cvc5 report UNSAT
+• Vampire, snake, e: Continue to find SAT solutions
+
+Subalternated Poisson:
+• All sizes: Z3 and cvc5 consistently report UNSAT
+• Vampire, snake, e: Maintain SAT results
+• Clear solver-dependent satisfiability outcomes
+
+================================================================
+SOLVER-SPECIFIC LOGICAL RELATIONSHIP ANALYSIS:
+================================================================
+
+VAMPIRE SOLVER:
+--------------
+Regular Distribution Performance:
+• Memory Usage: Excellent scaling (1.4-4.7 MB range)
+• Execution Time: Fast and consistent (0.004-0.033 s)
+• SAT Results: 100% SAT success rate across all relationships
+• Relationship Sensitivity: Minimal performance variation
+
+Poisson Distribution Performance:
+• Memory Usage: Stable with slight reduction (1.1-3.6 MB)
+• Execution Time: Consistent performance (0.003-0.019 s)
+• SAT Results: 100% SAT success rate (most reliable solver)
+• Statistical Robustness: Excellent adaptation to Poisson distribution
+
+SNAKE SOLVER:
+------------
+Regular Distribution Performance:
+• Memory Usage: Higher consumption with significant scaling (8.6-74.1 MB)
+• Execution Time: Variable performance (0.052-1.062 s)
+• SAT Results: 100% SAT success rate
+• Relationship Impact: Performance varies notably between relationships
+
+Poisson Distribution Performance:
+• Memory Usage: Reduced consumption (6.2-46.4 MB)
+• Execution Time: Improved performance (0.004-0.317 s)
+• SAT Results: 100% SAT success rate
+• Distribution Benefit: Poisson structure improves efficiency
+
+Z3 SOLVER:
+---------
+Regular Distribution Performance:
+• Memory Usage: High baseline with dramatic scaling (17.6-106.4 MB)
+• Execution Time: Generally fast (0.010-0.200 s)
+• SAT Results: 100% SAT success rate
+• Scaling Pattern: Significant memory growth with formula size
+
+Poisson Distribution Performance:
+• Memory Usage: Similar patterns (17.5-107.2 MB)
+• Execution Time: Consistent performance (0.000-0.137 s)
+• SAT Results: CRITICAL - Consistent UNSAT for most Poisson scenarios
+• Distribution Sensitivity: High - fundamentally different outcomes
+
+CVC5 SOLVER:
+-----------
+Regular Distribution Performance:
+• Memory Usage: Exceptional efficiency (0.026-0.136 MB)
+• Execution Time: Very fast (0.004-0.028 s)
+• SAT Results: 100% SAT success rate
+• Efficiency: Best memory performance across all relationships
+
+Poisson Distribution Performance:
+• Memory Usage: Maintained efficiency (0.016-0.132 MB)
+• Execution Time: Consistent speed (0.003-0.013 s)
+• SAT Results: CRITICAL - Mostly UNSAT for Poisson variants
+• Pattern: Similar to Z3 with distribution-dependent outcomes
+
+E SOLVER:
+--------
+Regular Distribution Performance:
+• Memory Usage: Variable, highest for subalternated (21.8 MB at 100 clauses)
+• Execution Time: Slower performance (0.493 s peak)
+• SAT Results: Limited activity in regular distribution
+• Relationship Sensitivity: Shows preference for specific relationships
+
+Poisson Distribution Performance:
+• Memory Usage: High consumption (7.1-111.4 MB)
+• Execution Time: Extremely variable (0.039-33.651 s)
+• SAT Results: 100% SAT when active
+• Challenge: Dramatic performance degradation with larger formulas
+
+================================================================
+LOGICAL RELATIONSHIP COMPLEXITY ANALYSIS:
+================================================================
+
+CONTRADICTORY RELATIONSHIP ANALYSIS:
+-----------------------------------
+• Logical Complexity: Mutual exclusion with completeness requirement
+• Regular Distribution: Generally satisfiable with good performance
+• Poisson Distribution: Creates solver disagreement patterns
+• Computational Challenge: Medium complexity for most solvers
+
+Key Insights:
+- Well-handled by robust solvers under regular distribution
+- Poisson distribution introduces satisfiability uncertainty
+- Solver-dependent interpretation of statistical variations
+
+SUBCONTRARY RELATIONSHIP ANALYSIS:
+---------------------------------
+• Logical Complexity: Disjunctive satisfaction requirement
+• Regular Distribution: Most reliable satisfiability pattern
+• Poisson Distribution: Moderate solver disagreement
+• Computational Challenge: Lowest complexity overall
+
+Key Insights:
+- Easiest relationship for consistent SAT results
+- Poisson effects are manageable for most solvers
+- Good baseline for comparative analysis
+
+SUBALTERNATED RELATIONSHIP ANALYSIS:
+-----------------------------------
+• Logical Complexity: Asymmetric implication structure
+• Regular Distribution: Consistent satisfiability across solvers
+• Poisson Distribution: High solver disagreement
+• Computational Challenge: Variable complexity depending on distribution
+
+Key Insights:
+- Regular distribution handles asymmetric logic well
+- Poisson distribution creates significant solver sensitivity
+- Asymmetric relationships amplify statistical distribution effects
+
+================================================================
+FORMULA SIZE SCALING IMPACT:
+================================================================
+
+SMALL FORMULAS (100 clauses):
+-----------------------------
+• Regular Distribution: All relationships easily satisfiable
+• Poisson Distribution: First signs of solver disagreement
+• Performance Impact: Minimal resource consumption
+• Satisfiability: Generally positive outcomes
+
+MEDIUM FORMULAS (200 clauses):
+-----------------------------
+• Regular Distribution: Continued reliable satisfiability
+• Poisson Distribution: Clear solver disagreement patterns emerge
+• Performance Impact: Moderate resource scaling
+• Critical Point: Poisson effects become pronounced
+
+LARGE FORMULAS (500 clauses):
+----------------------------
+• Regular Distribution: Maintained satisfiability with performance scaling
+• Poisson Distribution: Severe solver disagreement patterns
+• Performance Impact: Dramatic resource consumption for some solvers
+• Scaling Crisis: E solver shows extreme performance degradation
+
+================================================================
+STATISTICAL DISTRIBUTION IMPACT:
+================================================================
+
+REGULAR DISTRIBUTION CHARACTERISTICS:
+------------------------------------
+• Satisfiability: Highly predictable and consistent
+• Solver Agreement: Excellent across all relationships
+• Performance: Predictable scaling patterns
+• Reliability: Strong foundation for logical reasoning
+
+POISSON DISTRIBUTION CHARACTERISTICS:
+------------------------------------
+• Satisfiability: Highly unpredictable and solver-dependent
+• Solver Agreement: Poor to moderate depending on relationship
+• Performance: Variable impact on resource consumption
+• Challenge: Fundamental disagreement on problem satisfiability
+
+DISTRIBUTION COMPARISON INSIGHTS:
+-------------------------------
+• Regular distribution provides stable logical reasoning environment
+• Poisson distribution reveals solver implementation differences
+• Statistical variation amplifies logical relationship complexity
+• Solver choice becomes critical under statistical uncertainty
+
+================================================================
+SOLVER RELIABILITY RANKINGS:
+================================================================
+
+OVERALL RELIABILITY (Regular + Poisson):
+---------------------------------------
+1. Vampire: 100% SAT consistency across all scenarios
+2. Snake: 100% SAT consistency with good performance adaptation
+3. E: 100% SAT when active, but performance challenges
+4. Z3: High performance but critical Poisson sensitivity
+5. CVC5: Excellent efficiency but Poisson sensitivity
+6. Prover9: Variable results with limited data
+
+STATISTICAL ROBUSTNESS RANKINGS:
+-------------------------------
+1. Vampire: Perfect adaptation to statistical variations
+2. Snake: Good adaptation with performance benefits
+3. E: Maintains satisfiability but performance costs
+4. Z3: Poor statistical adaptation (UNSAT pattern)
+5. CVC5: Poor statistical adaptation despite efficiency
+
+PERFORMANCE EFFICIENCY RANKINGS:
+-------------------------------
+1. CVC5: Exceptional memory efficiency (when SAT)
+2. Vampire: Excellent balance of speed and memory
+3. Z3: Good performance but high memory usage
+4. Snake: Variable performance, relationship-dependent
+5. E: Poor scaling, extreme performance variability
+
+================================================================
+PRACTICAL IMPLICATIONS AND RECOMMENDATIONS:
+================================================================
+
+FOR LOGICAL REASONING APPLICATIONS:
+----------------------------------
+• Choose Vampire for maximum reliability across distributions
+• Use Snake for performance-critical applications with statistical robustness
+• Avoid Z3 and CVC5 for Poisson-distributed logical problems
+• Plan for solver disagreement in statistical environments
+
+FOR FORMAL VERIFICATION:
+-----------------------
+• Regular distribution provides reliable verification environment
+• Poisson distribution requires multiple solver validation
+• Implement solver consensus mechanisms for statistical problems
+• Account for fundamental satisfiability disagreements
+
+FOR RESEARCH AND DEVELOPMENT:
+----------------------------
+• Investigate solver implementation differences for statistical handling
+• Develop statistical-aware logical reasoning algorithms
+• Study relationship between clause length distribution and satisfiability
+• Create robust consensus mechanisms for uncertain environments
+
+================================================================
+LIMITATIONS AND FUTURE RESEARCH:
+================================================================
+
+CURRENT STUDY LIMITATIONS:
+-------------------------
+• Missing 50 and 1000 clause test cases
+• Limited to three logical relationships
+• No analysis of solver timeout patterns
+• Insufficient investigation of UNSAT causes
+
+RECOMMENDED EXTENSIONS:
+----------------------
+• Complete formula size range analysis
+• Investigate additional logical square relationships
+• Analyze solver timeout and error patterns
+• Study clause length distribution impact on satisfiability
+• Develop consensus algorithms for solver disagreement
+
+RESEARCH OPPORTUNITIES:
+----------------------
+• Statistical-aware SAT solver development
+• Logical relationship complexity metrics
+• Consensus-based satisfiability determination
+• Robust logical reasoning under uncertainty
+
+================================================================
+CONCLUSION:
+================================================================
+
+This comprehensive analysis reveals fundamental differences in how solvers handle logical square relationships under different statistical distributions. The study demonstrates that while regular distributions provide reliable and predictable logical reasoning environments, Poisson distributions create significant challenges with solver disagreement and satisfiability uncertainty.
+
+Vampire emerges as the most reliable solver across all scenarios, maintaining 100% SAT consistency regardless of distribution type. The critical finding that Z3 and CVC5 show systematic UNSAT patterns under Poisson distributions while Vampire, Snake, and E maintain SAT results highlights fundamental implementation differences in statistical handling.
+
+For practical applications, the results strongly recommend Vampire for statistical robustness, while emphasizing the need for multiple solver validation in uncertain environments. The study establishes that logical relationship complexity is amplified by statistical variation, requiring careful consideration of both factors in solver selection and system design.
+
+Generated: Problem 8 Analysis Report
+Date: Analysis of logical square relationships impact on solver performance
+Methodology: Comparative analysis across 6 solvers, 3 logical relationships, 2 distributions
+Critical Finding: Significant solver disagreement under Poisson distributions
+Formula sizes: 100, 200, 500 clauses per formula 

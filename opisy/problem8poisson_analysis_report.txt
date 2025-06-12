@@ -1,0 +1,138 @@
+PROBLEM 8 POISSON - LOGICAL SQUARE RELATIONSHIPS ANALYSIS REPORT
+================================================================
+
+EXPERIMENT OVERVIEW
+==================
+This analysis examines the impact of logical square relationships on SAT solver performance,
+comparing regular distribution vs Poisson distribution for formula generation.
+
+Study: Comparison of logical square formulas and their impact on time/memory
+Focus: Square logical (logical square) relationships with Poisson distribution variants
+
+LOGICAL RELATIONSHIPS TESTED
+============================
+
+Regular Distribution (a-c):
+a) Contradictory: (F₁ ⇒ ¬F₂) ∧ (¬F₁ ⇒ F₂)
+b) Subcontrary: ¬(¬F₁ ∧ ¬F₂) 
+c) Subalternated: (F₁ ⇒ F₂) ∧ ¬(F₂ ⇒ F₁)
+
+Poisson Distribution (d-f):
+d) Contradictory_Poisson: Poisson variant of (a)
+e) Subcontrary_Poisson: Poisson variant of (b)
+f) Subalternated_Poisson: Poisson variant of (c)
+
+FORMULA COMPOSITION
+==================
+- Individual formulas F₁, F₂: 50% liveness + 50% safety clauses
+- Formula size variations: 100, 200, 500 clauses
+- Atoms: 50, 100, 250 respectively
+- Safety/Liveness ratio: 50% each
+
+SOLVER PERFORMANCE ANALYSIS
+===========================
+
+Memory Usage Patterns:
+- Vampire: Consistently low memory usage (1-5 MB) across all relationships
+- Snake: Moderate memory usage, scales with problem size (6-74 MB)
+- Z3: High memory usage, especially for larger formulas (17-107 MB)
+- CVC5: Very low memory usage (0.01-0.13 MB)
+- E: Variable memory usage (7-111 MB)
+- Prover9: Moderate to high memory usage (0.8-113 MB)
+
+Execution Time Patterns:
+- Vampire: Fastest execution times (0.003-0.033 s)
+- Snake: Moderate execution times, increases with formula size
+- Z3: Fast to moderate execution times (0.000-0.200 s)
+- CVC5: Very fast execution times (0.003-0.022 s)
+- E: Variable execution times, some very slow (up to 33.651 s)
+- Prover9: Variable execution times (0.01-6.44 s)
+
+SAT/UNSAT RESULTS ANALYSIS
+==========================
+
+Regular Distribution Patterns:
+- Contradictory relationships: Mostly SAT results
+- Subcontrary relationships: All SAT results
+- Subalternated relationships: Mixed SAT/UNSAT results
+
+Poisson Distribution Patterns:
+- Contradictory_Poisson: Mostly SAT results
+- Subcontrary_Poisson: Mixed SAT/UNSAT results  
+- Subalternated_Poisson: Mixed SAT/UNSAT results, more UNSAT than regular
+
+KEY FINDINGS
+============
+
+1. DISTRIBUTION IMPACT:
+   - Poisson distribution tends to produce more UNSAT results than regular distribution
+   - This suggests Poisson distribution creates more constrained formula structures
+
+2. LOGICAL RELATIONSHIP IMPACT:
+   - Contradictory relationships are generally easier to satisfy
+   - Subalternated relationships show most variation in satisfiability
+   - Subcontrary relationships show different behavior between regular and Poisson variants
+
+3. SOLVER PERFORMANCE HIERARCHY:
+   - CVC5 and Vampire: Best overall performance (low memory, fast execution)
+   - Z3: Good performance but higher memory usage
+   - Snake: Moderate performance, scales reasonably
+   - E and Prover9: Most variable performance, potential for very slow execution
+
+4. SCALING CHARACTERISTICS:
+   - Memory usage scales roughly linearly with formula size
+   - Execution time shows more variability, some exponential scaling behavior
+   - Performance differences become more pronounced with larger formulas
+
+5. POISSON VS REGULAR COMPARISON:
+   - Poisson distribution generally leads to faster solving times
+   - However, Poisson variants show more UNSAT results, indicating different logical structure
+   - Memory usage patterns similar between distributions
+
+GENERATED VISUALIZATIONS
+========================
+
+1. p08_logical_relationships_comparison.png
+   - Comprehensive comparison across all three logical relationships
+   - Shows memory and time performance for each clause count
+
+2. p08_contradictory_regular_vs_poisson.png
+   - Direct comparison of regular vs Poisson for contradictory relationships
+
+3. p08_subcontrary_regular_vs_poisson.png  
+   - Direct comparison of regular vs Poisson for subcontrary relationships
+
+4. p08_subalternated_regular_vs_poisson.png
+   - Direct comparison of regular vs Poisson for subalternated relationships
+
+5. p08_contradictory_scaling.png
+   - Performance scaling analysis for contradictory relationships
+
+6. p08_subcontrary_scaling.png
+   - Performance scaling analysis for subcontrary relationships
+
+7. p08_subalternated_scaling.png
+   - Performance scaling analysis for subalternated relationships
+
+RECOMMENDATIONS
+===============
+
+1. For fastest solving: Use CVC5 or Vampire
+2. For memory-constrained environments: Use CVC5 or Vampire
+3. For robust solving across different formula types: Use Z3
+4. Poisson distribution provides interesting alternative formula structures
+5. Subalternated relationships offer most diverse solving challenges
+
+TECHNICAL NOTES
+===============
+- Analysis based on average results from 3 runs per configuration
+- Timeout threshold: 100 seconds
+- European decimal notation used in source data (commas as decimal separators)
+- Some solvers (like inkresat) show minimal activity on these problem types
+
+CONCLUSION
+==========
+The logical square relationship analysis reveals significant differences in solver 
+performance based on both the logical relationship type and the distribution method 
+used for formula generation. Poisson distribution creates meaningfully different 
+logical structures that affect both satisfiability and solver performance patterns. 

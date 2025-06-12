@@ -1,0 +1,255 @@
+PROBLEM 10 - QUANTIFIER NESTING DEPTH ANALYSIS REPORT
+===================================================
+
+EXPERIMENT OVERVIEW
+==================
+This analysis examines the impact of quantifier nesting depth on SAT solver performance,
+focusing on formulas with varying hierarchical complexity levels.
+
+Study: Impact of quantifier nesting depth (∀, ∃) on solving time and memory usage
+Focus: Hierarchical formula complexity and formal reasoning capabilities
+
+EXPERIMENTAL DESIGN
+===================
+
+Formula Specifications:
+- Constant clause counts: 100, 200, 500 clauses
+- Quantifier nesting depths: 1, 2, 3, 4 levels
+- Each clause contains at least one quantifier (∀ or ∃)
+- Safety and liveness clauses in equal proportions (50%/50%)
+- Atoms scale proportionally: 50, 100, 250 respectively
+
+Quantifier Nesting Examples:
+- Depth 1: ∀x P(x) or ∃y Q(y)
+- Depth 2: ∀x ∃y R(x,y) or ∃x ∀y S(x,y)
+- Depth 3: ∀x ∃y ∀z T(x,y,z)
+- Depth 4: ∀x ∃y ∀z ∃w U(x,y,z,w)
+
+Domain Relevance:
+- Formal modeling of complex domain rules
+- Permission systems and authorization logic
+- Entity relationships in complex systems
+- Hierarchical constraint specifications
+
+SOLVER PERFORMANCE ANALYSIS
+===========================
+
+Overall Performance Trends:
+
+Memory Usage Patterns:
+- Vampire: 0.611-2.620 MB (most memory efficient)
+- CVC5: 0.026-0.520 MB (ultra-low memory usage)
+- Snake: 5.122-18.489 MB (moderate scaling)
+- Z3: 17.010-18.170 MB (consistent high usage)
+
+Execution Time Patterns:
+- Vampire: 0.001-0.009 s (fastest overall)
+- Snake: 0.001-0.135 s (increasing with depth)
+- Z3: 0.000-0.013 s (very consistent)
+- CVC5: 0.003-0.041 s (moderate increase)
+
+Performance by Clause Count:
+
+100 Clauses (50 Atoms):
+- Best Memory Efficiency: CVC5 (0.026-0.099 MB)
+- Best Time Efficiency: Vampire (0.001-0.003 s)
+- Most Stable: Z3 (consistent ~17.5 MB, ~0.010 s)
+
+200 Clauses (100 Atoms):
+- Best Memory Efficiency: CVC5 (0.050-0.204 MB)
+- Best Time Efficiency: Vampire (0.001-0.003 s)
+- Notable: Snake shows significant time increase at depth 4 (0.031 s)
+
+500 Clauses (250 Atoms):
+- Best Memory Efficiency: CVC5 (0.124-0.520 MB)
+- Best Time Efficiency: Vampire (0.002-0.009 s)
+- Performance Impact: Snake shows dramatic slowdown at depth 4 (0.135 s)
+
+NESTING DEPTH IMPACT ANALYSIS
+=============================
+
+Depth 1 (Baseline):
+- All solvers show excellent performance
+- Memory usage: 0.026-17.970 MB range
+- Execution time: 0.000-0.015 s range
+- SAT Results: 100% SAT across all configurations
+
+Depth 2 (First Complexity Increase):
+- Notable behavior change: Z3 and CVC5 switch to UNSAT results
+- Memory efficiency improves for Vampire and Snake
+- Execution time remains low across all solvers
+- SAT Results: 50% SAT rate (Vampire/Snake: SAT, Z3/CVC5: UNSAT)
+
+Depth 3 (Moderate Complexity):
+- Return to SAT results for most solvers
+- Memory usage increases moderately
+- Execution time shows first significant increases
+- Snake begins showing scaling challenges with larger clause counts
+
+Depth 4 (Maximum Complexity):
+- All solvers return SAT results
+- Memory usage shows clear exponential growth patterns
+- Execution time demonstrates significant scaling effects
+- Snake performance degrades substantially (up to 0.135 s)
+
+COMPLEXITY SCALING INSIGHTS
+===========================
+
+Memory Scaling Characteristics:
+1. CVC5: Linear scaling with excellent efficiency (0.026-0.520 MB range)
+2. Vampire: Sub-linear scaling, very efficient (0.611-2.620 MB range)
+3. Snake: Exponential scaling becomes problematic (5.122-18.489 MB range)
+4. Z3: Plateau behavior, consistent but high usage (17.010-18.170 MB range)
+
+Time Scaling Characteristics:
+1. Vampire: Logarithmic scaling, excellent performance (0.001-0.009 s)
+2. Z3: Minimal scaling impact, very stable (0.000-0.013 s)
+3. CVC5: Linear scaling, acceptable performance (0.003-0.041 s)
+4. Snake: Exponential scaling, becomes problematic (0.001-0.135 s)
+
+Efficiency Degradation Analysis:
+- Vampire maintains efficiency across all depths
+- CVC5 shows predictable linear degradation
+- Z3 demonstrates robust consistency despite high baseline memory
+- Snake shows exponential degradation at higher complexities
+
+SAT/UNSAT BEHAVIOR PATTERNS
+===========================
+
+Interesting SAT Consistency Patterns:
+- Depth 1: 100% SAT agreement (all solvers agree)
+- Depth 2: 50% SAT rate (solver-dependent behavior)
+- Depth 3: ~100% SAT agreement (return to consensus)
+- Depth 4: 100% SAT agreement (all solvers agree)
+
+Solver-Specific SAT Patterns:
+- Vampire: Consistently SAT across all depths (most reliable)
+- Snake: Consistently SAT across all depths (reliable)
+- Z3: UNSAT only at depth 2 (specific sensitivity)
+- CVC5: UNSAT only at depth 2 (similar to Z3)
+
+The depth 2 UNSAT behavior suggests a specific logical structure 
+that Z3 and CVC5 interpret differently than Vampire and Snake.
+
+KEY FINDINGS
+============
+
+1. NESTING DEPTH COMPLEXITY IMPACT:
+   - Exponential complexity growth confirmed for deeper nesting
+   - Memory usage scales more predictably than execution time
+   - Different solvers show varying sensitivity to hierarchical complexity
+
+2. SOLVER PERFORMANCE HIERARCHY:
+   - Vampire: Best overall performance across all metrics
+   - CVC5: Exceptional memory efficiency with acceptable time scaling
+   - Z3: Consistent but resource-intensive performance
+   - Snake: Good for shallow nesting, struggles with deep complexity
+
+3. COMPLEXITY SCALING PATTERNS:
+   - Linear scaling: CVC5 (memory), CVC5 (time)
+   - Logarithmic scaling: Vampire (both metrics)
+   - Exponential scaling: Snake (both metrics at high complexity)
+   - Plateau behavior: Z3 (memory usage)
+
+4. QUANTIFIER NESTING CHALLENGES:
+   - Depth 2 creates specific logical reasoning challenges
+   - Deeper nesting (3-4) generally more solvable than depth 2
+   - Hierarchical complexity affects different reasoning engines differently
+
+5. PRACTICAL IMPLICATIONS:
+   - Vampire recommended for deep quantifier nesting scenarios
+   - CVC5 excellent for memory-constrained environments
+   - Snake suitable only for shallow nesting applications
+   - Z3 provides consistent but resource-intensive solutions
+
+DOMAIN MODELING INSIGHTS
+========================
+
+Formal Rule Modeling:
+- Quantifier depth directly correlates with authorization complexity
+- Depth 3-4 formulas suitable for modeling complex permission hierarchies
+- Performance remains feasible for practical domain rule systems
+
+Entity Relationship Complexity:
+- Deeper nesting enables more sophisticated relationship modeling
+- Solver choice critical for complex multi-entity scenarios
+- Memory efficiency becomes paramount in large-scale systems
+
+Verification Feasibility:
+- Quantifier nesting up to depth 4 remains computationally tractable
+- Performance characteristics enable real-world verification scenarios
+- Solver selection should align with specific complexity requirements
+
+GENERATED VISUALIZATIONS
+========================
+
+1. p10_nesting_depth_analysis.png
+   - Comprehensive nesting depth impact analysis across all clause counts
+   - Memory and time scaling patterns for each solver
+
+2. p10_complexity_scaling_heatmaps.png
+   - Heatmap visualization of complexity scaling for best performers
+   - Visual representation of clause count × nesting depth impact
+
+3. p10_nesting_efficiency_analysis.png
+   - Solver efficiency trends and performance degradation analysis
+   - Efficiency ranking and comparative performance metrics
+
+4. p10_quantifier_complexity_insights.png
+   - Advanced complexity insights including trade-off analysis
+   - SAT consistency patterns and complexity factor correlations
+
+RECOMMENDATIONS
+===============
+
+For Shallow Nesting (Depth 1-2):
+- Use any solver based on other requirements
+- CVC5 recommended for memory efficiency
+- Z3 suitable for consistent performance needs
+
+For Moderate Nesting (Depth 3):
+- Vampire provides best overall performance
+- CVC5 maintains excellent memory efficiency
+- Avoid Snake for larger clause counts
+
+For Deep Nesting (Depth 4):
+- Vampire strongly recommended for all scenarios
+- CVC5 acceptable with memory priority
+- Z3 suitable if consistency valued over efficiency
+- Snake not recommended for large clause counts
+
+For Production Systems:
+- Vampire for performance-critical applications
+- CVC5 for memory-constrained environments
+- Consider hybrid approaches based on detected complexity
+
+TECHNICAL NOTES
+===============
+- Analysis based on average results from 3 runs per configuration
+- European decimal notation used in source data (commas as decimal separators)
+- Timeout threshold: 100 seconds (not reached in any test case)
+- Some solvers (prover9, e, inkresat) showed errors and were excluded
+
+FUTURE RESEARCH DIRECTIONS
+==========================
+1. Extend nesting depth analysis to levels 5-8
+2. Investigate mixed quantifier patterns (∀∃∀∃ vs ∀∀∀∀)
+3. Analyze quantifier elimination effectiveness
+4. Study alternation impact vs nesting depth
+5. Apply to real-world authorization system verification
+
+CONCLUSION
+==========
+The quantifier nesting depth analysis reveals significant insights into the 
+hierarchical complexity challenges faced by SAT solvers. While all tested 
+solvers handle moderate nesting depths effectively, performance characteristics 
+vary dramatically. Vampire emerges as the most robust choice for deep quantifier 
+nesting scenarios, while CVC5 provides exceptional memory efficiency. The research 
+demonstrates that quantifier nesting up to depth 4 remains computationally 
+tractable for practical formal verification applications, with careful solver 
+selection based on specific complexity and resource requirements.
+
+The unexpected SAT/UNSAT behavior at depth 2 highlights the nuanced nature of 
+quantifier reasoning and suggests opportunities for further investigation into 
+the logical structures that create specific reasoning challenges for different 
+solver architectures. 

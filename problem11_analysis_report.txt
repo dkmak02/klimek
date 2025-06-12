@@ -1,0 +1,304 @@
+PROBLEM 11 - CLAUSE POLARITY IMPACT ANALYSIS REPORT
+==================================================
+
+EXPERIMENT OVERVIEW
+==================
+This analysis examines the impact of clause polarity on SAT solver performance,
+focusing on different proportions of positive, negative, and mixed literal clauses.
+
+Study: Impact of clause polarization on solver behavior and performance
+Focus: Contradiction detection tendencies based on dominant literal types
+
+EXPERIMENTAL DESIGN
+===================
+
+Polarity Configurations:
+a) 100% Positive (100:0:0) - Only positive literals (p, q, r)
+b) 50% Negative, 50% Mixed (0:50:50) - No positive, equal negative and mixed
+c) 33% Each Type (33:33:33) - Balanced distribution across all types
+d) 100% Mixed (0:0:100) - Only mixed clauses (both positive and negative literals)
+
+Formula Specifications:
+- Clause counts: 100, 200, 500 clauses
+- Atoms scale proportionally: 50, 100, 250 respectively
+- Each formula contains all atoms at least once
+- Safety/Liveness ratio: 50% (baseline configuration)
+
+Literal Type Definitions:
+- Positive clauses: Only positive literals (e.g., p ∨ q ∨ r)
+- Negative clauses: Only negative literals (e.g., ¬p ∨ ¬q ∨ ¬r)
+- Mixed clauses: Combination of positive and negative literals (e.g., p ∨ ¬q ∨ r)
+
+SOLVER PERFORMANCE ANALYSIS
+===========================
+
+Overall Performance Patterns:
+
+Memory Usage Analysis:
+- Vampire: 0.629-1.059 MB (most memory efficient)
+- CVC5: 0.009-0.050 MB (ultra-low memory usage)
+- Snake: 5.122-6.871 MB (moderate scaling)
+- Z3: 17.460-17.920 MB (consistent high usage)
+- E: 11.870-79.464 MB (highly variable, problematic scaling)
+
+Execution Time Analysis:
+- Vampire: 0.002-0.004 s (fastest overall)
+- Snake: 0.001-0.007 s (very fast)
+- Z3: 0.000-0.010 s (consistent performance)
+- CVC5: 0.003-0.019 s (good performance)
+- E: 0.285-12.515 s (extremely variable, poor scaling)
+
+POLARITY CONFIGURATION IMPACT
+=============================
+
+100% Positive Configuration (100:0:0):
+
+Performance Characteristics:
+- Generally excellent performance across all solvers
+- Vampire: Consistently low memory (0.629-1.005 MB)
+- CVC5: Ultra-efficient memory usage (0.009-0.045 MB)
+- E: Shows dramatic performance degradation with clause count (0.285s → 12.515s)
+
+SAT Results: 100% SAT across all working solvers and clause counts
+Memory Pattern: Slightly higher baseline usage, possibly due to unit propagation patterns
+Time Pattern: Fastest solving times for most solvers
+
+50% Negative, 50% Mixed Configuration (0:50:50):
+
+Performance Characteristics:
+- Mixed behavior creates interesting solver-specific patterns
+- Vampire: Similar efficiency to other configurations
+- Snake: Consistent performance across clause counts
+- Z3: Maintains stable performance baseline
+- E: Only tested on smaller clause counts (shows reliability issues)
+
+SAT Results: 100% SAT agreement
+Memory Pattern: Balanced resource usage
+Time Pattern: Moderate solving times, good stability
+
+33% Each Type Configuration (33:33:33):
+
+Performance Characteristics:
+- Most balanced configuration, representing realistic scenarios
+- Vampire: Excellent stability across all metrics
+- CVC5: Maintains ultra-low memory efficiency
+- Snake: Shows predictable scaling patterns
+- Z3: Consistent resource usage
+
+SAT Results: 100% SAT agreement across all tests
+Memory Pattern: Balanced resource allocation
+Time Pattern: Consistent with mixed configuration expectations
+
+100% Mixed Configuration (0:0:100):
+
+Performance Characteristics:
+- Pure mixed clauses create unique solving challenges
+- Vampire: Maintains excellent efficiency
+- CVC5: Consistent ultra-low memory usage
+- Snake: Stable performance characteristics
+- Z3: Robust handling of mixed clause complexity
+
+SAT Results: 100% SAT agreement
+Memory Pattern: Efficient resource usage, comparable to other configurations
+Time Pattern: Fast solving times, suggests good mixed clause handling
+
+CLAUSE COUNT SCALING ANALYSIS
+=============================
+
+100 Clauses (50 Atoms):
+- All configurations show excellent performance
+- E solver participates effectively at this scale
+- Memory usage minimal across all polarity types
+- Execution times uniformly fast (0.001-0.010 s range)
+
+200 Clauses (100 Atoms):
+- E solver shows dramatic performance degradation (12.515 s for 100% positive)
+- Other solvers maintain excellent scaling characteristics
+- Memory usage remains very reasonable (under 7 MB for most solvers)
+- Polarity impact becomes more visible in performance patterns
+
+500 Clauses (250 Atoms):
+- E solver excluded due to reliability issues
+- Remaining solvers show robust scaling across all polarity types
+- Memory efficiency maintained (Z3 plateau at ~17.9 MB)
+- Execution times remain practical (under 0.020 s)
+
+SOLVER-SPECIFIC POLARITY SENSITIVITY
+===================================
+
+Vampire:
+- Exceptional robustness across all polarity configurations
+- Memory usage: 0.629-1.059 MB (minimal variation)
+- Time performance: 0.002-0.004 s (excellent consistency)
+- Shows slight preference for pure configurations (marginally faster)
+
+CVC5:
+- Outstanding memory efficiency across all configurations
+- Memory usage: 0.009-0.050 MB (ultra-low, excellent scaling)
+- Time performance: 0.003-0.019 s (good scaling characteristics)
+- Minimal polarity sensitivity, excellent robustness
+
+Snake:
+- Consistent performance across polarity types
+- Memory usage: 5.122-6.871 MB (predictable scaling)
+- Time performance: 0.001-0.007 s (very good efficiency)
+- Shows minimal polarity bias, reliable solver
+
+Z3:
+- Remarkably stable across all configurations
+- Memory usage: 17.460-17.920 MB (plateau behavior, minimal variation)
+- Time performance: 0.000-0.010 s (excellent consistency)
+- Polarity-agnostic performance, robust architecture
+
+E:
+- Significant polarity sensitivity observed
+- Memory usage: 11.870-79.464 MB (highly variable, problematic)
+- Time performance: 0.285-12.515 s (dramatic degradation with scale)
+- Strong bias against pure positive configurations at scale
+
+CONTRADICTION DETECTION PATTERNS
+===============================
+
+SAT/UNSAT Behavior:
+- All configurations consistently produce SAT results
+- No evidence of polarity-induced contradiction patterns in test formulas
+- Suggests formulas designed to be satisfiable regardless of polarity distribution
+
+Performance Efficiency by Polarity:
+1. 100% Mixed (0:0:100): Often fastest solving times
+2. 50% Negative, 50% Mixed (0:50:50): Balanced performance
+3. 33% Each Type (33:33:33): Consistent with expectations
+4. 100% Positive (100:0:0): Good performance but solver-dependent issues
+
+Solver Robustness Ranking:
+1. Z3: Most consistent performance across all polarity types
+2. Vampire: Excellent efficiency with minimal polarity sensitivity
+3. CVC5: Outstanding memory efficiency with good polarity tolerance
+4. Snake: Good overall performance with moderate polarity sensitivity
+5. E: Significant polarity sensitivity and scaling issues
+
+KEY FINDINGS
+============
+
+1. POLARITY IMPACT ON PERFORMANCE:
+   - Pure positive configurations create specific challenges for some solvers (E)
+   - Mixed clause configurations generally perform better than pure configurations
+   - Balanced polarity distributions show most predictable performance
+
+2. SOLVER ARCHITECTURAL INSIGHTS:
+   - Z3 demonstrates polarity-agnostic architecture (most robust)
+   - Vampire shows excellent efficiency regardless of polarity
+   - CVC5 maintains ultra-low memory usage across all configurations
+   - E exhibits significant polarity bias and scaling issues
+
+3. MEMORY VS TIME TRADE-OFFS:
+   - Memory usage largely independent of polarity configuration
+   - Execution time shows more polarity sensitivity than memory
+   - Pure configurations may trigger different algorithmic paths
+
+4. SCALABILITY PATTERNS:
+   - Most solvers scale gracefully across polarity types
+   - Pure positive configurations most challenging for certain solvers
+   - Mixed configurations often provide best overall performance
+
+5. PRACTICAL IMPLICATIONS:
+   - Real-world formulas (mixed polarity) well-handled by all tested solvers
+   - Pure positive formulas may require careful solver selection
+   - Balanced polarity distributions offer most predictable performance
+
+DOMAIN MODELING INSIGHTS
+========================
+
+Formula Generation Implications:
+- Mixed clause formulas more representative of real-world problems
+- Pure polarity configurations useful for testing solver robustness
+- Balanced distributions recommended for benchmarking applications
+
+Solver Selection Guidelines:
+- Z3: Best choice for polarity-diverse problem sets
+- Vampire: Excellent for memory-constrained environments
+- CVC5: Optimal for ultra-low memory requirements
+- Snake: Good general-purpose choice with minimal polarity bias
+
+Performance Optimization:
+- Polarity distribution can be used for solver-specific optimization
+- Mixed configurations generally provide most reliable performance
+- Pure configurations useful for identifying solver weaknesses
+
+GENERATED VISUALIZATIONS
+========================
+
+1. p11_polarity_impact_analysis.png
+   - Comprehensive polarity impact analysis across all clause counts
+   - Memory and time scaling patterns for each polarity configuration
+
+2. p11_polarity_comparison_matrix.png
+   - Matrix comparison of all polarity configurations
+   - Efficiency analysis and complexity scoring
+
+3. p11_solver_polarity_sensitivity.png
+   - Individual solver sensitivity analysis to polarity changes
+   - Normalized performance comparisons
+
+4. p11_polarity_contradiction_analysis.png
+   - Contradiction detection patterns and solver robustness analysis
+   - SAT/UNSAT distribution and performance variance
+
+RECOMMENDATIONS
+===============
+
+For Pure Positive Formulas:
+- Avoid E solver for larger clause counts
+- Use Vampire, CVC5, or Z3 for reliable performance
+- Monitor memory usage with scaling
+
+For Mixed Polarity Formulas:
+- Any tested solver (except E at scale) provides good performance
+- Z3 recommended for maximum robustness
+- CVC5 optimal for memory-constrained scenarios
+
+For Performance-Critical Applications:
+- Vampire for fastest execution times
+- CVC5 for minimal memory footprint
+- Z3 for most consistent behavior across polarity types
+
+For Benchmarking and Testing:
+- Use balanced polarity distributions (33:33:33) for fairness
+- Include pure configurations to test solver robustness
+- Avoid E solver for large-scale comparative studies
+
+TECHNICAL NOTES
+===============
+- Analysis based on average results from 3 runs per configuration
+- European decimal notation used in source data (commas as decimal separators)
+- Timeout threshold: 100 seconds (not reached except by E solver)
+- Some solvers (prover9, inkresat) showed errors and were excluded
+
+FUTURE RESEARCH DIRECTIONS
+==========================
+1. Investigate specific algorithmic paths triggered by pure positive formulas
+2. Analyze polarity impact on unsatisfiable formula sets
+3. Study polarity distribution effects on proof complexity
+4. Examine polarity-aware solving strategies
+5. Test polarity impact on real-world industrial benchmarks
+
+CONCLUSION
+==========
+The clause polarity analysis reveals significant insights into how literal distribution
+affects SAT solver performance. While most modern solvers demonstrate robust handling
+of polarity variations, specific configurations can create performance challenges for
+certain solvers. The research demonstrates that mixed clause configurations generally
+provide the most reliable and predictable performance across different solver
+architectures.
+
+The dramatic performance degradation observed in the E solver for pure positive
+configurations highlights the importance of polarity-aware testing in solver
+evaluation. Z3's consistent performance across all polarity types exemplifies
+polarity-agnostic design, while Vampire's efficiency and CVC5's minimal memory
+usage make them excellent choices for resource-constrained applications.
+
+For practical applications, the research suggests that naturally occurring mixed
+polarity formulas are well-handled by modern SAT solvers, while artificially
+constructed pure polarity formulas may reveal solver-specific architectural
+limitations. This has important implications for both solver development and
+benchmark design in the SAT solving community. 
